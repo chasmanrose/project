@@ -13,8 +13,8 @@ SET ECHO ON
 ----------------------------------------------------------------------------------------------------
 CREATE TABLE Orders(
 	OrderID CHAR(6) NOT NULL, -- Made this change to avoid aggregation issues; PK
-	PayMethod String, —-May need to change to CHAR, but length changes
-	ShippingAddress String, —-comment above
+	PayMethod String, —-May need to change to CHAR, but length changes - Variable Length
+	ShippingAddress String, —-comment above |Variable Length
 	cID CHAR(12) NOT NULL, -- foreign key to Customers Table
 
 	ActualShipDate datetime,
@@ -23,9 +23,10 @@ CREATE TABLE Orders(
 
 	Pickup BOOLEAN NOT NULL,
 	
-	Discount Float, —-float is correct, want discount as % of ord cost
+	Discount Float, —-float is correct, want discount as % of ord cost || Maybe better to do in Query
+	
 	CONSTRAINT ORD_IC1 PRIMARY KEY (OrderID) —-PRIMARY KEY(OrderID),
-	CONSTRAINT ORD_IC2 FOREIGN KEY, (cID),
+	CONSTRAINT ORD_IC2 FOREIGN KEY, (cID) REFERENCES Customers (cID),
 	CONSTRAINT ORD_IC3 CHECK (ExpectedShipDate => ReceivedDate),
 	CONSTRAINT ORD_IC4 CHECK (ActualShipDate +. ReceivedDate),
 	CONSTRAINT ORD_IC5 CHECK (PayMethod IN 'credit', 'check', 'NEFT', 'IMPS', 'RTGS'),
@@ -33,26 +34,27 @@ CREATE TABLE Orders(
 );
 ---------------------------------------------------------------------------------------------------------------
 CREATE TABLE Customers(
-	Class CHAR(1) NOT NULL,
-	cName String, —-not sure of CHAR(size) here or just can have string
+	Class String NOT NULL,
+	cName String, —-not sure of CHAR(size) here or just can have string |Variable Length
 	cID CHAR(12) NOT NULL,
-	cLocation String, —-same as above
+	cLocation String, —-same as above |Variable length
 	
 	CONSTRAINT Cust_IC1 PRIMARY KEY (cID) —-PRIMARY KEY(cID),
-	CONSTRAINT Cust_IC2 CHECK (class IN 'individual', 'company', 'wholesale')
+	CONSTRAINT Cust_IC2 CHECK (class IN "individual', 'company', 'wholesale')
 );
 ------------------------------- ------------------------------------------------------------------------------------
 CREATE TABLE Employee(
-	Job CHAR(20) NOT NULL,
+	Job VARCHAR(20) NOT NULL, --Wouldn't this be proper change? 
 	EmployeeID CHAR(11) NOT NULL, -- Again changes made for aggregation purposes don't want to get sum of emp ID, just cnt
-	NameFirst String, —-not sure again of length of CHAR or can just have string
-	NameLast String, —-same as above
+	NameFirst String NOT NULL, —-not sure again of length of CHAR or can just have string |Variable Length
+	NameLast String NOT NULL, —-same as above|Variable Length
 	LocationID String, -- FK to Location Table
 	
-	PayRate Float, -- Change made because I wasn't sure if this is an efficiency rate. 
-			—-not sure if FLOAT is a type, or if we have to use INTEGER
-		       -- if so, calculation would be better generated with a Query
-	CONSTRAINT sIC3 PRIMARY KEY (EmployeeID) -—PRIMARY KEY(EmployeeID)
+	--PayRate Float, 
+		       -- Employee hourly pay
+		       
+	CONSTRAINT EMP_IC1 PRIMARY KEY (EmployeeID) -—PRIMARY KEY(EmployeeID)
+	CONSTRAINT EMP_IC2 CHECK (Job IN 'Selector', 'Quality Checker', 'Manager', 
 );
 ----------------------------------------------------------------------------------------------------------------------
 CREATE TABLE Location(
@@ -62,8 +64,9 @@ CREATE TABLE Location(
 	City String,
 
 	ZipCode INTEGER NOT NULL,
-	Latitude INTEGER NOT NULL, -- Wanted to add these just for functionality, map building!
-	Longitude INTEGER NOT NULL,
+	--Latitude INTEGER NOT NULL, -- Wanted to add these just for functionality, map building!
+	--Longitude INTEGER NOT NULL, -- Cool idea but limited resources so taking them back out. 
+	--could be done with zip anyways with a program 
 	CONSTRAINT sIC4 PRIMARY KEY (LocationID) —-PRIMARY KEY(LocationID)
 );
 ------------------------------------------------------------------------------------------------------------------------
@@ -88,9 +91,14 @@ CREATE TABLE Part(
 	VendorID CHAR(3) NOT NULL,
 
 	PartPrice Float, 
-	CONSTRAINT sIC7 PRIMARY KEY (PartID) —-PRIMARY KEY(PartID)
+	
+	CONSTRAINT PT_IC1 PRIMARY KEY (PartID) —-PRIMARY KEY(PartID)
+	CONSTRAINT PT_IC2 FOREIGN KEY (VendorID) REFERENCES Vendors (vID)
 );
 --------------------------------------------------------------------------------------------------------------------
+-- Couple questions here for CompatibleCar, I was thinking all relevant info could be kept in the part
+--table without overcomplicating it.
+------------------------------------
 CREATE TABLE CompatibleCar(
 	PartID CHAR(10) NOT NULL,
 	Make String,
@@ -99,7 +107,7 @@ CREATE TABLE CompatibleCar(
 	ToYear INTEGER NOT NULL,
 	Part Price Float,
 	
-	QuantityInStock INTEGER NOT NULL,
+	-- QuantityInStock INTEGER NOT NULL,
 	CONSTRAINT sIC9 PRIMARY KEY (BinID) -—PRIMARY KEY(BinID)
 );
 --------------------------------------------------------------------------------------------------------------------
