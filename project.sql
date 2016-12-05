@@ -52,7 +52,7 @@ CREATE TABLE Employee(
 	PayRate FLOAT NOT NULL, -- Change made because I wasn't sure if this is an efficiency rate. 
 			—-not sure if FLOAT is a type, or if we have to use INTEGER
 		       -- if so, calculation would be better generated with a Query
-	CONSTRAINT EMP_IC1 PRIMARY KEY (EmployeeID), -—PRIMARY KEY(EmployeeID)
+	CONSTRAINT EMP_IC1 PRIMARY KEY (EmployeeID), -—PRIMARY KEY(EmployeeID),
 	CONSTRAINT EMP_IC2 FOREIGN KEY (LocationID) REFERENCES Location(LocationID)
 );
 ----------------------------------------------------------------------------------------------------------------------
@@ -75,7 +75,7 @@ CREATE TABLE Line(
 	QuantityRequested INTEGER NOT NULL,
 	QuantitySelected INTEGER NOT NULL,
 	
-	CONSTRAINT LN_IC1 PRIMARY KEY (OrderID, LineNumber)—-PRIMARY KEY(OrderID, LineNumber),
+	CONSTRAINT LN_IC1 PRIMARY KEY (OrderID, LineNumber),—-PRIMARY KEY(OrderID, LineNumber),
 	CONSTRAINT LN_IC2 CHECK (QuantityRequested > 0),
 	CONSTRAINT LN_IC3 CHECK (QuantitySelected >= 0),
 	CONSTRAINT LN_IC4 CHECK (LinePrice >= 0),
@@ -93,7 +93,7 @@ CREATE TABLE Part(
 	ToYear INTEGER NOT NULL,
 	PartPrice FLOAT NOT NULL,
  
-	CONSTRAINT PRT_IC1 PRIMARY KEY (PartID) —-PRIMARY KEY(PartID)
+	CONSTRAINT PRT_IC1 PRIMARY KEY (PartID) —-PRIMARY KEY(PartID),
 	CONSTRAINT PRT_IC2 FOREIGN KEY (VendorID) REFERENCES Vendors(vID)
 );
 --------------------------------------------------------------------------------------------------------------------
@@ -102,7 +102,7 @@ CREATE TABLE Bin(
 	LocationID CHAR(4) NOT NULL, —-fk->location
 	
 	QuantityInStock INTEGER NOT NULL,
-	CONSTRAINT BN_IC1 PRIMARY KEY (BinID) -—PRIMARY KEY(BinID)
+	CONSTRAINT BN_IC1 PRIMARY KEY (BinID) -—PRIMARY KEY(BinID),
 	CONSTRAINT BN_IC2 FOREIGN KEY (LocationID) REFERENCES Location(LocationID)
 );
 -------------------------------------------------------------------------------------------------------------
@@ -112,7 +112,7 @@ CREATE TABLE Vendors(
 	vAddress CHAR(200),
 	vCity CHAR(200),
 	vState CHAR(2) NOT NULL,
-	vZIP INTEGER NOT NULL
+	vZIP INTEGER NOT NULL,
 	
 	CONSTRAINT VEN_IC1 PRIMARY KEY (vID) —-PRIMARY KEY(vID)
 
@@ -138,7 +138,8 @@ INSERT INTO Orders VALUES (‘571281’, ‘credit’, ‘1022 Campus Dr, Allend
 
 INSERT INTO Orders VALUES (‘797678’, ‘check’, ‘102 Campus Dr, Allendale MI, 49201’, ‘45677’, 05/12/16, 05/16/16, 05/20/16, False, 0.010);
 
-INSERT INTO Orders VALUES (‘123411’, ‘IMPS’, ‘20 Mallard Dr,Gibraltar MI, 48173’, ‘36989’, 07/19/16, 07/21/16, 07/25/16, False, 0.010);
+INSERT INTO Orders VALUES (‘123411’, ‘IMPS’, ‘20 Mallard Dr,
+Gibraltar MI, 48173’, ‘36989’, 07/19/16, 07/21/16, 07/25/16, False, 0.010);
 
 INSERT INTO Orders VALUES (‘572831’, ‘credit’, ‘123 Grade Dr, Chicago IL, 60290’, ‘04324’, 03/03/16, 03/04/16, 03/07/16, False, 0.030);
 
@@ -156,7 +157,8 @@ INSERT INTO Customers VALUES ('65432', 'John Doe', '3214 Grand Rd, Grand Rapids,
 INSERT INTO Customers VALUES ('04324', 'Ray Roy', '898 Out St, Chicago IL, 60290', 'C');
 INSERT INTO Customers VALUES ('12345', 'Robert Plant', '1022 Campus Dr, Allendale MI, 49201', 'C');
 INSERT INTO Customers VALUES ('45677', 'Jimmy Page', '102 Campus Dr, Allendale MI, 49201', 'C');
-INSERT INTO Customers VALUES ('36989', 'Tim Othy', '20 Mallard Dr,Gibraltar MI, 48173', 'A');
+INSERT INTO Customers VALUES ('36989', 'Tim Othy', '20 Mallard Dr,
+Gibraltar MI, 48173', 'A');
 
 —-Employee Inserts here
 INSERT INTO Employee VALUES (‘199’, ‘Ralph’, ‘Klasp’, ‘Manager’, 30, ’2839’);
